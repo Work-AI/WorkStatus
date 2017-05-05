@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "set DEV=true && concurrently --kill-others \"npm start\"",
-    "postinstall": "install-app-deps",
+    "postinstall": "install-app-deps && electron app/node_modules/iohook/install.js",
     "pack": "build --dir",
     "dist": "build",
     "dist-x": "build -ml",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "concurrently": "^2.2.0",
     "electron-builder": "^5.16.0",
-    "electron-prebuilt": "^1.2.0",
+    "electron": "1.4.16",
     "electron-reload": "^1.0.0"
   },
   "dependencies": {
