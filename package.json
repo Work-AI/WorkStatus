@@ -1,0 +1,43 @@
+{
+  "name": "WorkStatus",
+  "version": "0.1.0",
+  "description": "A work status monitor in Electron",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "set DEV=true && concurrently --kill-others \"npm start\"",
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build",
+    "dist-x": "build -ml",
+    "release": "build"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solderzzc/WorkStatus.git"
+  },
+  "keywords": [
+    "Markdown",
+    "editor",
+    "Electron"
+  ],
+  "author": "GitHub",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solderzzc/WorkStatus/issues"
+  },
+  "homepage": "https://github.com/solderzzc/WorkStatus",
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "electron-builder": "^5.16.0",
+    "electron-prebuilt": "^1.2.0",
+    "electron-reload": "^1.0.0"
+  },
+  "dependencies": {
+  },
+  "build": {
+    "appId": "us.workai.workstatus",
+    "app-category-type": "public.app-category.productivity"
+  }
+}

@@ -1,0 +1,89 @@
+@require 'reset'
+@require 'colors'
+
+.fa
+	transition: 0.3s all ease-out
+
+html
+	height: 100%
+
+body
+	font-family: 'Fira Mono', sans-serif
+	background-color: backgroundBlue
+	display: flex
+	flex-direction: column
+	height: 100%
+
+.app
+	position: fixed
+	top: 0
+	width: 100%
+	z-index: 100
+
+.spacer
+	display: block
+	height: 2rem
+	width: 100%
+
+.editor-container
+	flex-grow: 1
+	margin-top: 2rem
+	height: 100px
+
+.editor-nav
+	width: 100%
+	background-color: darken(syntax-background-color, 30%)
+	height: 2rem
+	box-shadow: inset 0px -1px 3px 0px rgba(0,0,0,0.4)
+
+.editor-nav__tab
+	color: syntax-text-color
+	font-size: 0.7rem
+	min-width: 11rem
+	position: relative
+	padding-right: 1.5rem
+	padding-left: 0.5rem
+	height: 2rem
+	overflow: hidden
+	line-height: 1rem
+	line-height: 2rem
+	display: inline-block
+	cursor: pointer
+	box-sizing: border-box
+	word-break: break-all
+
+.editor-nav__tab_active
+	border-bottom: 2px solid blue
+
+.editor-nav__tab-close-icon
+	display: none
+	position: absolute
+	top: 0.55rem
+	right: 0.4rem
+	&:hover
+		color: red
+
+.editor-nav__tab:hover .editor-nav__tab-close-icon
+	display: block
+
+.editor-nav__tab-change-icon
+	color: pink
+	display: none
+
+.editor-nav__tab_changed .editor-nav__tab-change-icon
+	display: inline-block
+
+.no-editor-placeholder
+	display: block
+	margin-top: 10%
+	text-align: center
+	opacity: 0.4
+
+.no-editor-placeholder__image
+	display: inline-block;
+	width: 400px
+	margin-bottom: 1rem
+
+.no-editor-placeholder__text
+	font-size: 1.5rem
+	color: syntax-text-color

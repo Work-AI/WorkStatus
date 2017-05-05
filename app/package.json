@@ -1,0 +1,23 @@
+{
+  "name": "WorkStatus",
+  "version": "0.1.0",
+  "description": "A work status monitor in Electron.",
+  "main": "./main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solderzzc/WorkStatus.git"
+  },
+  "private": true,
+  "keywords": [
+    "Work",
+    "Status"
+  ],
+  "author": "Simba Zhang <solderzzc@gmail.com>",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "http://workai-cloud.apps.58dahuo.com"
+  },
+  "homepage": "http://workai-cloud.apps.58dahuo.com",
+  "dependencies": {
+  }
+}
