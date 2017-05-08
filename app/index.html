@@ -20,6 +20,7 @@ var fs = require('fs');
 var watcher = null;
 var showInLogFlag = true;
 var watch = require('watch');
+var du = require('du');
 
 function StartWatcher(path){
 	document.getElementById("start").disabled = true;
@@ -28,12 +29,6 @@ function StartWatcher(path){
 		ignored: /[\/\\]\./,
 		persistent: true
 	});
-	function onWatcherReady(){
-		console.info('From here can you check for real changes, the initial scan has been completed.');
-		showInLogFlag = true;
-		document.getElementById("stop").style.display = "block";
-		document.getElementById("messageLogger").innerHTML = "The path is now being watched";
-	}
 	watcher
 			.on('add', function(path) {
 				console.log('File', path, 'has been added');
@@ -78,6 +73,13 @@ function StartWatcher(path){
 				console.log('Raw event info:', event, path, details);
 			});
 }
+
+function onWatcherReady(){
+	console.info('From here can you check for real changes, the initial scan has been completed.');
+	showInLogFlag = true;
+	document.getElementById("stop").style.display = "block";
+	document.getElementById("messageLogger").innerHTML = "The path is now being watched";
+}
 document.getElementById("start").addEventListener("click",function(e){
 	const {dialog} = require('electron').remote;
 	dialog.showOpenDialog({
@@ -87,37 +89,41 @@ document.getElementById("start").addEventListener("click",function(e){
 			//StartWatcher(path[0]);
 
 			document.getElementById("messageLogger").innerHTML = "Scanning the path, please wait ...";
-			watch.createMonitor(path[0],{
-				ignoreDotFiles: true,
-				ignoreUnreadableDir: true,
-				ignoreNotPermitted: true,
-				ignoreDirectoryPattern: /node_modules/
-			} ,function (monitor) {
-				monitor.files[path[0]+'/.zshrc'] // Stat object for my zshrc.
-				monitor.on("created", function (f, stat) {
-					// Handle new files
-					console.log('Directory', f, 'has been added');
-					if(showInLogFlag){
-						addLog("Folder added : "+f,"new");
-					}
-				})
-				monitor.on("changed", function (f, curr, prev) {
-					// Handle file changes
-					console.log('Directory', f, 'has been changes');
-					if(showInLogFlag){
-						addLog("Folder changes : "+f);
-					}
-				})
-				monitor.on("removed", function (f, stat) {
-					// Handle removed files
-					console.log('Directory', f, 'has been removed');
-					if(showInLogFlag){
-						addLog("Folder removed : "+f);
-					}
+			require('du')(path[0], function (err, size) {
+				console.log('The size of' + path[0] + ' is:', size, 'bytes')
 
+				watch.createMonitor(path[0],{
+					ignoreDotFiles: true,
+					ignoreUnreadableDir: true,
+					ignoreNotPermitted: true,
+					ignoreDirectoryPattern: /node_modules/
+				} ,function (monitor) {
+					monitor.files[path[0]+'/.zshrc'] // Stat object for my zshrc.
+					monitor.on("created", function (f, stat) {
+						// Handle new files
+						console.log('Directory', f, 'has been added');
+						if(showInLogFlag){
+							addLog("Folder added : "+f,"new");
+						}
+					})
+					monitor.on("changed", function (f, curr, prev) {
+						// Handle file changes
+						console.log('Directory', f, 'has been changes');
+						if(showInLogFlag){
+							addLog("Folder changes : "+f);
+						}
+					})
+					monitor.on("removed", function (f, stat) {
+						// Handle removed files
+						console.log('Directory', f, 'has been removed');
+						if(showInLogFlag){
+							addLog("Folder removed : "+f);
+						}
+
+					})
+					onWatcherReady();
+					//monitor.stop(); // Stop watching
 				})
-				onWatcherReady();
-				//monitor.stop(); // Stop watching
 			})
 		}else {
 			console.log("No path selected");
