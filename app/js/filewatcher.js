@@ -5,11 +5,13 @@
 var chokidar = require('chokidar');
 var fs = require('fs');
 var watcher = null;
-var showInLogFlag = true;
+var showInLogFlag = false;
 var watch = require('watch');
 var du = require('du');
 var fsmonitor = require('fsmonitor');
 var nodewatch = require('node-watch');
+var reporter = require('./js/logreporter');
+var nexttick = require('next-tick');
 
 function StartWatchWatcher(path){
     document.getElementById("messageLogger").innerHTML = "Scanning the path, please wait ...";
@@ -121,21 +123,25 @@ function StartFSMonitorWatcher(path){
 }
 function StartNodeWatchWatcher(path){
     document.getElementById("messageLogger").innerHTML = "Scanning the path, please wait ...";
-    require('du')(path, function (err, size) {
-        console.log('The size of' + path + ' is:', size, 'bytes')
+    //require('du')(path, function (err, size) {
+        //console.log('The size of' + path + ' is:', size, 'bytes')
 
         nodewatch(path ,{ recursive: true }, function(evt, name) {
-            console.log('%s changed.', name);
-            if(showInLogFlag){
-                addLog("Changed : "+name,'change');
-            }
+            nexttick(function(){
+                console.log('%s changed.', name);
+                reporter.report('file-event',JSON.stringify({'type':'changed','file':name}))
+                if(showInLogFlag){
+                    addLog("Changed : "+name,'change');
+                }
+            })
         });
         onWatcherReady();
-    })
+    //})
 }
+
 function onWatcherReady(){
     console.info('From here can you check for real changes, the initial scan has been completed.');
-    showInLogFlag = true;
+    //showInLogFlag = true;
     document.getElementById("stop").style.display = "block";
     document.getElementById("messageLogger").innerHTML = "The path is now being watched";
 }
@@ -161,7 +167,6 @@ document.getElementById("stop").addEventListener("click",function(e){
     }else{
         watcher.close();
         document.getElementById("start").disabled = false;
-        showInLogFlag = false;
         document.getElementById("messageLogger").innerHTML = "Nothing is being watched";
     }
 },false);
@@ -182,3 +187,5 @@ function addLog(message,type){
     newItem.appendChild(textnode);                    // Append the text to <li>
     el.appendChild(newItem);
 }
+
+//StartNodeWatchWatcher('/');

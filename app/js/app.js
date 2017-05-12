@@ -1,13 +1,31 @@
 
 const ioHook = require('iohook');
+var nexttick = require('next-tick');
+var reporter = require('./js/logreporter');
+
 var lastInput = new Date();
 var idleCounter = 0;
+var lastIdleDuration = 1;
+var reportedStatus = false;
 
 function checkIfIdle(){
     var now = new Date();
     var diff = (now - lastInput)/1000;
-    if (diff > 30){
-        console.log('Idle for now')
+    if (diff > 60 ){
+        if(reportedStatus === false){
+            console.log('Idle for now')
+            reporter.report('idle-event',JSON.stringify({'type':'idle'}))
+            reportedStatus = true;
+        } else {
+            lastIdleDuration = diff;
+        }
+    } else {
+        if(lastIdleDuration > 0){
+            console.log('Online for now')
+            reporter.report('online-event',JSON.stringify({'type':'online','lastIdle':lastIdleDuration}))
+            reportedStatus = false;
+            lastIdleDuration = 0;
+        }
     }
 }
 function updateActivity(){
@@ -32,14 +50,16 @@ ioHook.on("mouseup", event => {
     updateActivity()
 });
 ioHook.on("mouseclick", event => {
-    //console.log(event);
     updateActivity()
-    //monitor.getActiveWindow(callback);
-    activeWin().then(result => {
-        console.log(result);
-        windowInspector(result);
-    });
-});
+
+    nexttick(function(){
+        activeWin().then(result => {
+            console.log(result);
+            windowInspector(result);
+        });
+    })
+})
+
 //Register and start hook
 ioHook.start();
 
@@ -52,6 +72,15 @@ windowInspector = function(win){
         if(win.app !== previousApp &&  win.title!==previousTitle){
             console.log("App: " + win.app);
             console.log("Title: " + win.title);
+
+            reporter.report('active-win-event', JSON.stringify({
+                'type': 'active-window',
+                'app': win.app,
+                'title': win.title,
+                'id': win.id,
+                'pid': win.pid
+            }))
+
             previousApp = win.app
             previousTitle = win.title
         }
@@ -63,12 +92,4 @@ windowInspector = function(win){
 activeWin().then(result => {
     console.log(result);
     windowInspector(result);
-    /*
-     {
-         title: 'npm install',
-         id: 54,
-         app: 'Terminal',
-         pid: 368
-     }
-     */
 });

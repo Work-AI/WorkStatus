@@ -24,6 +24,9 @@
     "watch":"~1.0.2",
     "chokidar":"~1.7.0",
     "fsmonitor":"~0.2.4",
-    "du":"~0.1.0"
+    "du":"~0.1.0",
+    "globals":"~9.17.0",
+    "logstash-client":"~1.1.1",
+    "next-tick":"~1.0.0"
   }
 }
