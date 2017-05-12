@@ -12,6 +12,8 @@ var fsmonitor = require('fsmonitor');
 var nodewatch = require('node-watch');
 var reporter = require('./js/logreporter');
 var nexttick = require('next-tick');
+const Configstore = require('configstore');
+const conf = new Configstore('desktop.workai.filewatcher');
 
 function StartWatchWatcher(path){
     document.getElementById("messageLogger").innerHTML = "Scanning the path, please wait ...";
@@ -125,7 +127,7 @@ function StartNodeWatchWatcher(path){
     document.getElementById("messageLogger").innerHTML = "Scanning the path, please wait ...";
     //require('du')(path, function (err, size) {
         //console.log('The size of' + path + ' is:', size, 'bytes')
-
+        addPathToWatch(path);
         nodewatch(path ,{ recursive: true }, function(evt, name) {
             nexttick(function(){
                 console.log('%s changed.', name);
@@ -187,5 +189,34 @@ function addLog(message,type){
     newItem.appendChild(textnode);                    // Append the text to <li>
     el.appendChild(newItem);
 }
+function addPathToWatch(path){
+    var watchingList = conf.get('towatch')
+    if(watchingList){
+        for(var i=0;i<watchingList.length;i++){
+            if(watchingList[i] === path){
+                console.log('Already on the list');
+                return;
+            }
+        }
+        watchingList.push(path);
+        conf.set('towatch',watchingList);
+    } else {
+        conf.set('towatch',[path]);
+    }
+}
 
-//StartNodeWatchWatcher('/');
+var watchingList = conf.get('towatch')
+if(watchingList){
+    watchingList.forEach(function(item){
+        console.log('to watch: '+item)
+        nodewatch(item ,{ recursive: true }, function(evt, name) {
+            nexttick(function(){
+                console.log('%s changed.', name);
+                reporter.report('file-event',JSON.stringify({'type':'changed','file':name}))
+                if(showInLogFlag){
+                    addLog("Changed : "+name,'change');
+                }
+            })
+        });
+    })
+}
