@@ -11,6 +11,8 @@ var reporter = require('./js/logreporter');
 var nexttick = require('next-tick');
 var debounce = require('debounce');
 
+var fileChangedList = [];
+
 const Configstore = require('configstore');
 const conf = new Configstore('desktop.workai.filewatcher');
 
@@ -97,17 +99,38 @@ function startToWatch(filePath){
     nodewatch(filePath ,{ recursive: true }, function(evt, name) {
         nexttick(function(){
             console.log('%s changed.', name);
-            reporter.report('file-event',JSON.stringify({'type':'changed','file':name}))
+            fileChangedList.push(name);
+            onReportFileChangedList();
             if(showInLogFlag){
                 addLog("Changed : "+name,'change');
             }
         })
     });
 }
-var watchingList = conf.get('towatch')
-if(watchingList){
-    watchingList.forEach(function(item){
-        console.log('to watch: '+item)
-        startToWatch(item);
-    })
+function reportFileChangedList(){
+    if(fileChangedList && fileChangedList.length > 0){
+        var message = JSON.stringify({
+                'type':'changed',
+                'number':fileChangedList.length,
+                'fileList':fileChangedList}
+        );
+        reporter.report('file-event',message)
+        console.log(message)
+        fileChangedList = [];
+        return;
+    }
+    fileChangedList = [];
 }
+
+// it's reasonable to merge file changed in the same 3s
+var onReportFileChangedList = debounce(reportFileChangedList,3*1000);
+
+setTimeout(function(){
+    var watchingList = conf.get('towatch')
+    if(watchingList){
+        watchingList.forEach(function(item){
+            console.log('to watch: '+item)
+            startToWatch(item);
+        })
+    }
+},5*1000)
