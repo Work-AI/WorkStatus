@@ -21,9 +21,7 @@
   "dependencies": {
     "iohook":"https://github.com/solderzzc/iohook/tarball/f2e4d5b79bdc681a380f5b151a549df697cb888d",
     "active-win":"~2.0.0",
-    "watch":"~1.0.2",
-    "chokidar":"~1.7.0",
-    "fsmonitor":"~0.2.4",
+    "node-watch":"~0.5.4",
     "du":"~0.1.0",
     "globals":"~9.17.0",
     "logstash-client":"~1.1.1",
