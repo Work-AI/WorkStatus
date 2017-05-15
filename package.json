@@ -1,6 +1,6 @@
 {
   "name": "WorkStatus",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "A work status monitor in Electron",
   "main": "app/main.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solderzzc/WorkStatus.git"
+    "url": "git+https://github.com/Work-AI/WorkStatus.git"
   },
   "keywords": [
     "Markdown",
@@ -25,9 +25,9 @@
   "author": "GitHub",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/solderzzc/WorkStatus/issues"
+    "url": "https://github.com/Work-AI/WorkStatus/issues"
   },
-  "homepage": "https://github.com/solderzzc/WorkStatus",
+  "homepage": "https://github.com/Work-AI/WorkStatus",
   "devDependencies": {
     "concurrently": "^2.2.0",
     "electron-builder": "^5.16.0",

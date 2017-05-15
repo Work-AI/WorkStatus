@@ -1,11 +1,11 @@
 {
   "name": "WorkStatus",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A work status monitor in Electron.",
   "main": "./main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/solderzzc/WorkStatus.git"
+    "url": "git+https://github.com/Work-AI/WorkStatus.git"
   },
   "private": true,
   "keywords": [
