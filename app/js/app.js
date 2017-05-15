@@ -81,17 +81,16 @@ ioHook.on("keyup", event => {
 });
 ioHook.on("mouseup", event => {
     //console.log(event);
-    updateActivity()
-});
-ioHook.on("mouseclick", event => {
-    updateActivity()
-
     nexttick(function(){
         activeWin().then(result => {
             console.log(result);
             windowInspector(result);
         });
     })
+    updateActivity()
+});
+ioHook.on("mouseclick", event => {
+    updateActivity()
 })
 
 //Register and start hook
