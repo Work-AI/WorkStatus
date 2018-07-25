@@ -31,7 +31,7 @@
   "devDependencies": {
     "concurrently": "^2.2.0",
     "electron-builder": "^5.16.0",
-    "electron": "1.4.16",
+    "electron": "1.8.7",
     "electron-reload": "^1.0.0"
   },
   "dependencies": {
